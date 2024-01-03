@@ -1,0 +1,21 @@
+---
+
+- block:
+
+  - name: "Clean bootstrap_env directories"
+    file: path="/tmp/ansible/bootstrap_env/python" state=absent
+
+  - name: "Sync requirements.txt"
+    include_tasks: "roles/common/tasks/loop_fileglob_synchronize.yml"
+    loop:
+      - { src: "{{ playbook_dir }}/virtual_environment/bootstrap_env/python/requirements.txt", dest: "/tmp/ansible/bootstrap_env" }
+    loop_control:
+      loop_var: outer_item
+
+  - name: "Install bootstrap_env python package"
+    ansible.builtin.pip:
+      chdir: "/tmp/ansible/bootstrap_env"
+      requirements: "/tmp/ansible/bootstrap_env/requirements.txt"
+      virtualenv: "/opt/ansible/bootstrap_env/python"
+      virtualenv_command: "/usr/local/python2.7/bin/virtualenv"
+      virtualenv_python: "python2.7"

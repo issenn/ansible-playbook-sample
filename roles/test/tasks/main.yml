@@ -1,0 +1,22 @@
+---
+
+- name: cat config
+  ansible.builtin.shell: >
+    cat /etc/hosts
+  register: hostsfile
+
+- debug: msg="{{ hostsfile.stdout }}"
+
+- name: Python version
+  ansible.builtin.command: python3 -V
+  register: python_version
+
+- debug: msg="{{ python_version.stdout }}"
+
+- name: run shell
+  ansible.builtin.script: test.sh
+
+- name: run python
+  ansible.builtin.script: test.py
+  args:
+    executable: python3
